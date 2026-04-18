@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arkadaşlık</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    overflow-x: hidden;
+}
+
+/* HEADER */
+header {
+    text-align: center;
+    padding: 40px;
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    animation: fadeDown 1s ease;
+}
+
+/* ANİMASYON */
+@keyframes fadeDown {
+    from {opacity: 0; transform: translateY(-50px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* KARTLAR */
+.container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 40px;
+}
+
+.card {
+    width: 280px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+    transition: 0.4s;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.05);
+    background: rgba(255,255,255,0.2);
+}
+
+.card h2 {
+    margin-bottom: 15px;
+}
+
+.card p {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* BUTON */
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #00c6ff;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #0072ff;
+}
+
+/* ALT YAZI */
+footer {
+    text-align: center;
+    padding: 20px;
+    opacity: 0.6;
+}
+
+/* ARKA PLAN PARÇACIK */
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: float 10s linear infinite;
+}
+
+@keyframes float {
+    from {transform: translateY(100vh);}
+    to {transform: translateY(-10vh);}
+}
+
+/* POPUP */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: #1e3c72;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    transition: 0.4s;
+    z-index: 10;
+}
+
+.popup.active {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.popup button {
+    background: red;
+}
+
+/* OVERLAY */
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>ARKADAŞLIK 💙</header>
+
+<div class="container">
+
+<div class="card">
+<h2>Güven</h2>
+<p>Gerçek arkadaşlık güven üzerine kurulur. Birbirine güvenen insanlar daha güçlü bağlar oluşturur.</p>
+<button onclick="showMessage('Güven en önemli şeydir.')">Oku</button>
+</div>
+
+<div class="card">
+<h2>Destek</h2>
+<p>Zor zamanlarda yanında olan kişiler gerçek dostlardır. Onlar seni asla yalnız bırakmaz.</p>
+<button onclick="showMessage('Gerçek dost her zaman yanındadır.')">Oku</button>
+</div>
+
+<div class="card">
+<h2>Eğlence</h2>
+<p>Arkadaşlık birlikte gülmek, eğlenmek ve güzel anılar biriktirmektir.</p>
+<button onclick="showMessage('Birlikte gülmek en güzelidir.')">Oku</button>
+</div>
+
+<div class="card">
+<h2>Sadakat</h2>
+<p>Sadakat, arkadaşlığın temel taşlarından biridir. Gerçek dostlar her zaman yanında kalır.</p>
+<button onclick="showMessage('Sadakat gerçek dostluk getirir.')">Oku</button>
+</div>
+
+</div>
+
+<footer>© 2026 Arkadaşlık Projesi</footer>
+<footer>
+    <span class="special-text">
+        ZOR DURUMDA YANIMDA OLAN ARKADAŞIM BEYTULLAH'A SEVGİLERLE 💙
+    </span>
+</footer>
+
+<style>
+.special-text {
+    font-size: 18px;
+    color: #ffd700;
+    font-weight: bold;
+    animation: glowText 2s infinite alternate;
+}
+
+@keyframes glowText {
+    from { text-shadow: 0 0 5px #ffd700; }
+    to { text-shadow: 0 0 20px #00c6ff; }
+}
+</style>
+
+<div class="popup" id="popup">
+<h2 id="popupText"></h2>
+<button onclick="closePopup()">Kapat</button>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<script>
+
+/* POPUP */
+function showMessage(msg){
+    document.getElementById("popupText").innerText = msg;
+    document.getElementById("popup").classList.add("active");
+    document.getElementById("overlay").classList.add("active");
+}
+
+function closePopup(){
+    document.getElementById("popup").classList.remove("active");
+    document.getElementById("overlay").classList.remove("active");
+}
+
+/* ARKA PLAN PARTİCLE */
+for(let i=0;i<60;i++){
+    let p = document.createElement("div");
+    p.className="particle";
+    p.style.left = Math.random()*100+"vw";
+    p.style.animationDuration = (5+Math.random()*5)+"s";
+    document.body.appendChild(p);
+}
+
+/* RANDOM ARKAPLAN RENK */
+let colors = [
+    "linear-gradient(135deg, #1e3c72, #2a5298)",
+    "linear-gradient(135deg, #ff7e5f, #feb47b)",
+    "linear-gradient(135deg, #00c6ff, #0072ff)",
+    "linear-gradient(135deg, #8e2de2, #4a00e0)"
+];
+
+let i = 0;
+
+setInterval(()=>{
+    i = (i+1)%colors.length;
+    document.body.style.background = colors[i];
+},5000);
+
+/* TIKLAMA EFEKTİ */
+document.addEventListener("click",(e)=>{
+    let circle = document.createElement("div");
+    circle.style.position="absolute";
+    circle.style.width="10px";
+    circle.style.height="10px";
+    circle.style.background="white";
+    circle.style.borderRadius="50%";
+    circle.style.left=e.clientX+"px";
+    circle.style.top=e.clientY+"px";
+    circle.style.opacity=1;
+    document.body.appendChild(circle);
+
+    let fade = setInterval(()=>{
+        circle.style.opacity -=0.05;
+        if(circle.style.opacity<=0){
+            circle.remove();
+            clearInterval(fade);
+        }
+    },20);
+});
+
+</script>
+
+</body>
+</html>
