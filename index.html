@@ -2,176 +2,217 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Seni Seviyorum 💖 Ultra</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Güzel Kızsın ❤️</title>
 
 <style>
 body {
-    margin:0;
-    overflow:hidden;
-    background: radial-gradient(circle at center, #120018, #000);
-    font-family: Arial;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #ff4e50, #fc913a);
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
 }
 
-canvas {
-    display:block;
-}
-
-.text {
-    position:absolute;
-    width:100%;
-    text-align:center;
-    top:35%;
-    color:#fff;
-    font-size:50px;
-    letter-spacing:3px;
-    text-shadow:0 0 10px #ff0055, 0 0 30px #ff00aa;
-    animation: float 3s infinite ease-in-out;
+/* ARKA PLAN PARÇACIK */
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: float 10s linear infinite;
 }
 
 @keyframes float {
-    0%{ transform:translateY(0px); }
-    50%{ transform:translateY(-15px); }
-    100%{ transform:translateY(0px); }
+    from {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(-10vh);
+        opacity: 1;
+    }
+}
+
+/* ANA YAZI */
+.text {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+    font-size: 60px;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 10px white; }
+    to { text-shadow: 0 0 40px red; }
+}
+
+/* KALP */
+.heart {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: red;
+    transform: rotate(-45deg);
+    top: 55%;
+    left: 50%;
+    margin-left: -50px;
+    animation: beat 1s infinite;
+}
+
+.heart::before,
+.heart::after {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: red;
+    border-radius: 50%;
+}
+
+.heart::before {
+    top: -50px;
+    left: 0;
+}
+
+.heart::after {
+    left: 50px;
+    top: 0;
+}
+
+@keyframes beat {
+    0% { transform: scale(1) rotate(-45deg); }
+    50% { transform: scale(1.2) rotate(-45deg); }
+    100% { transform: scale(1) rotate(-45deg); }
+}
+
+/* ALT YAZI */
+.sub {
+    position: absolute;
+    top: 75%;
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    color: white;
+    opacity: 0.8;
+}
+
+/* TIKLAMA EFEKTİ */
+.click-heart {
+    position: absolute;
+    color: red;
+    font-size: 20px;
+    pointer-events: none;
+    animation: rise 1s forwards;
+}
+
+@keyframes rise {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="text">SENİ SEVİYORUM 💖</div>
-<canvas id="c"></canvas>
+<div class="text">GÜZEL KIZSIN ❤️</div>
+<div class="heart"></div>
+<div class="sub">Tıklayınca kalpler çıkar 💖</div>
 
 <script>
-const canvas = document.getElementById("c");
-const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-// ---------------- HEART PARTICLES ----------------
-let particles = [];
-
-class Particle {
-    constructor(x,y,color){
-        this.x=x;
-        this.y=y;
-        this.size=Math.random()*4+2;
-        this.vx=(Math.random()-0.5)*4;
-        this.vy=(Math.random()-0.5)*4;
-        this.life=100;
-        this.color=color;
-    }
-
-    update(){
-        this.x+=this.vx;
-        this.y+=this.vy;
-        this.life--;
-    }
-
-    draw(){
-        ctx.fillStyle=this.color;
-        ctx.globalAlpha=this.life/100;
-        ctx.beginPath();
-        ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
-        ctx.fill();
-        ctx.globalAlpha=1;
-    }
+/* ARKA PLAN YILDIZLARI */
+for (let i = 0; i < 80; i++) {
+    let p = document.createElement("div");
+    p.className = "particle";
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.animationDuration = (5 + Math.random() * 5) + "s";
+    document.body.appendChild(p);
 }
 
-// ---------------- HEART FUNCTION ----------------
-function drawHeart(x,y,size,pulse){
-    ctx.save();
-    ctx.translate(x,y);
-    ctx.scale(size+pulse,size+pulse);
+/* TIKLAYINCA KALP ÇIKSIN */
+document.addEventListener("click", function(e) {
+    let heart = document.createElement("div");
+    heart.className = "click-heart";
+    heart.innerHTML = "❤️";
 
-    ctx.beginPath();
-    for(let i=0;i<360;i++){
-        let t=i*Math.PI/180;
-        let px=16*Math.pow(Math.sin(t),3);
-        let py=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
-        ctx.lineTo(px,py);
-    }
+    heart.style.left = e.clientX + "px";
+    heart.style.top = e.clientY + "px";
 
-    ctx.fillStyle="red";
-    ctx.shadowColor="red";
-    ctx.shadowBlur=30;
-    ctx.fill();
+    document.body.appendChild(heart);
 
-    ctx.restore();
-}
-
-// ---------------- MOUSE LIGHT ----------------
-let mouse = {x:0,y:0};
-
-canvas.addEventListener("mousemove",(e)=>{
-    mouse.x=e.clientX;
-    mouse.y=e.clientY;
+    setTimeout(() => {
+        heart.remove();
+    }, 1000);
 });
 
-// ---------------- CLICK EXPLOSION ----------------
-canvas.addEventListener("click",(e)=>{
-    for(let i=0;i<40;i++){
-        particles.push(new Particle(e.clientX,e.clientY,"#ff0044"));
-    }
-});
+/* ARKA PLAN RENK DEĞİŞİM */
+let colors = [
+    "linear-gradient(135deg, #ff4e50, #fc913a)",
+    "linear-gradient(135deg, #ff6a00, #ee0979)",
+    "linear-gradient(135deg, #00c6ff, #0072ff)",
+    "linear-gradient(135deg, #f7971e, #ffd200)"
+];
 
-// ---------------- HEART RAIN ----------------
-function spawnRain(){
-    particles.push(new Particle(
-        Math.random()*canvas.width,
-        canvas.height,
-        "#ff3366"
-    ));
-}
+let index = 0;
 
-// ---------------- MAIN LOOP ----------------
-let t=0;
+setInterval(() => {
+    index = (index + 1) % colors.length;
+    document.body.style.background = colors[index];
+}, 4000);
 
-function animate(){
-    ctx.fillStyle="rgba(0,0,0,0.15)";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+/* RANDOM PARLAKLIK EFEKTİ */
+setInterval(() => {
+    document.querySelector(".text").style.opacity = Math.random() * 0.5 + 0.5;
+}, 500);
 
-    t+=0.05;
+/* KALP BOYUT RANDOM */
+setInterval(() => {
+    let heart = document.querySelector(".heart");
+    let scale = 1 + Math.random() * 0.3;
+    heart.style.transform = `scale(${scale}) rotate(-45deg)`;
+}, 800);
 
-    // mouse glow
-    let g = ctx.createRadialGradient(mouse.x,mouse.y,10,mouse.x,mouse.y,80);
-    g.addColorStop(0,"rgba(255,0,100,0.3)");
-    g.addColorStop(1,"transparent");
+/* EKSTRA PARTICLE */
+setInterval(() => {
+    let p = document.createElement("div");
+    p.className = "particle";
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.animationDuration = (5 + Math.random() * 5) + "s";
+    document.body.appendChild(p);
 
-    ctx.fillStyle=g;
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    setTimeout(() => p.remove(), 10000);
+}, 500);
 
-    // big heart
-    drawHeart(
-        canvas.width/2,
-        canvas.height/2,
-        8,
-        Math.sin(t)*0.3
-    );
+/* ALT YAZI ANİMASYON */
+let sub = document.querySelector(".sub");
+let texts = [
+    "Sen çok özelsin ✨",
+    "Gülüşün efsane 😍",
+    "Kalbin çok güzel ❤️",
+    "Harikasın 💫"
+];
 
-    // particles
-    for(let i=particles.length-1;i>=0;i--){
-        let p=particles[i];
-        p.update();
-        p.draw();
-        if(p.life<=0) particles.splice(i,1);
-    }
+let ti = 0;
 
-    // rain spawn
-    if(Math.random()<0.3){
-        spawnRain();
-    }
+setInterval(() => {
+    ti = (ti + 1) % texts.length;
+    sub.innerHTML = texts[ti];
+}, 3000);
 
-    requestAnimationFrame(animate);
-}
-
-animate();
-
-// resize
-window.addEventListener("resize",()=>{
-    canvas.width=window.innerWidth;
-    canvas.height=window.innerHeight;
-});
 </script>
 
 </body>
