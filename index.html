@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Seni Seviyorum 💖 Ultra</title>
+
+<style>
+body {
+    margin:0;
+    overflow:hidden;
+    background: radial-gradient(circle at center, #120018, #000);
+    font-family: Arial;
+}
+
+canvas {
+    display:block;
+}
+
+.text {
+    position:absolute;
+    width:100%;
+    text-align:center;
+    top:35%;
+    color:#fff;
+    font-size:50px;
+    letter-spacing:3px;
+    text-shadow:0 0 10px #ff0055, 0 0 30px #ff00aa;
+    animation: float 3s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%{ transform:translateY(0px); }
+    50%{ transform:translateY(-15px); }
+    100%{ transform:translateY(0px); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="text">SENİ SEVİYORUM 💖</div>
+<canvas id="c"></canvas>
+
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// ---------------- HEART PARTICLES ----------------
+let particles = [];
+
+class Particle {
+    constructor(x,y,color){
+        this.x=x;
+        this.y=y;
+        this.size=Math.random()*4+2;
+        this.vx=(Math.random()-0.5)*4;
+        this.vy=(Math.random()-0.5)*4;
+        this.life=100;
+        this.color=color;
+    }
+
+    update(){
+        this.x+=this.vx;
+        this.y+=this.vy;
+        this.life--;
+    }
+
+    draw(){
+        ctx.fillStyle=this.color;
+        ctx.globalAlpha=this.life/100;
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+        ctx.fill();
+        ctx.globalAlpha=1;
+    }
+}
+
+// ---------------- HEART FUNCTION ----------------
+function drawHeart(x,y,size,pulse){
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.scale(size+pulse,size+pulse);
+
+    ctx.beginPath();
+    for(let i=0;i<360;i++){
+        let t=i*Math.PI/180;
+        let px=16*Math.pow(Math.sin(t),3);
+        let py=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+        ctx.lineTo(px,py);
+    }
+
+    ctx.fillStyle="red";
+    ctx.shadowColor="red";
+    ctx.shadowBlur=30;
+    ctx.fill();
+
+    ctx.restore();
+}
+
+// ---------------- MOUSE LIGHT ----------------
+let mouse = {x:0,y:0};
+
+canvas.addEventListener("mousemove",(e)=>{
+    mouse.x=e.clientX;
+    mouse.y=e.clientY;
+});
+
+// ---------------- CLICK EXPLOSION ----------------
+canvas.addEventListener("click",(e)=>{
+    for(let i=0;i<40;i++){
+        particles.push(new Particle(e.clientX,e.clientY,"#ff0044"));
+    }
+});
+
+// ---------------- HEART RAIN ----------------
+function spawnRain(){
+    particles.push(new Particle(
+        Math.random()*canvas.width,
+        canvas.height,
+        "#ff3366"
+    ));
+}
+
+// ---------------- MAIN LOOP ----------------
+let t=0;
+
+function animate(){
+    ctx.fillStyle="rgba(0,0,0,0.15)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    t+=0.05;
+
+    // mouse glow
+    let g = ctx.createRadialGradient(mouse.x,mouse.y,10,mouse.x,mouse.y,80);
+    g.addColorStop(0,"rgba(255,0,100,0.3)");
+    g.addColorStop(1,"transparent");
+
+    ctx.fillStyle=g;
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // big heart
+    drawHeart(
+        canvas.width/2,
+        canvas.height/2,
+        8,
+        Math.sin(t)*0.3
+    );
+
+    // particles
+    for(let i=particles.length-1;i>=0;i--){
+        let p=particles[i];
+        p.update();
+        p.draw();
+        if(p.life<=0) particles.splice(i,1);
+    }
+
+    // rain spawn
+    if(Math.random()<0.3){
+        spawnRain();
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+// resize
+window.addEventListener("resize",()=>{
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+});
+</script>
+
+</body>
+</html>
